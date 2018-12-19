@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<allCompanies>
+    <companyCollection>
+        <name>Google</name>
+        <symbol>|GOOG</symbol>
+        <share_price>
+            <currency>USD</currency>
+            <value>566</value>
+        </share_price>
+        <available_shares>6556</available_shares>
+    </companyCollection>
+</allCompanies>

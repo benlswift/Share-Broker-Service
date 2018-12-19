@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    
+    elementFormDefault="qualified">
+	
+    <xsd:complexType name="company">
+          <xsd:sequence>
+             <xsd:element name="name"     type="xsd:string" />
+             <xsd:element name="symbol" type="xsd:string" />
+			 <xsd:element name="share_price">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="currency"   type="xsd:string"/>
+						<xsd:element name="value" type="xsd:int"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="available_shares"   type="xsd:int" />
+             <xsd:element name="last_update" type="xsd:date" />
+          </xsd:sequence>
+       </xsd:complexType>
+	
+	<xsd:element name="allCompanies">
+        <xsd:complexType>
+            <xsd:sequence >
+                <xsd:element name="companyCollection" type="company" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+     
+
+</xsd:schema>

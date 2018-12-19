@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<allCompanies>
+    <companyCollection>
+        <name>Microsoft</name>
+        <symbol>MSFT</symbol>
+        <share_price>
+            <currency>£</currency>
+            <value>106</value>
+        </share_price>
+        <available_shares>10000</available_shares>
+    </companyCollection>
+    <companyCollection>
+        <name>Apple</name>
+        <symbol>APPL</symbol>
+        <share_price>
+            <currency>£</currency>
+            <value>170</value>
+        </share_price>
+        <available_shares>100000</available_shares>
+    </companyCollection>
+    <companyCollection>
+        <name>Facebook</name>
+        <symbol>FCBK</symbol>
+        <share_price>
+            <currency>£</currency>
+            <value>90</value>
+        </share_price>
+        <available_shares>500</available_shares>
+    </companyCollection>
+</allCompanies>
