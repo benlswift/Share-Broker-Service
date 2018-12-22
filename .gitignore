@@ -64,3 +64,4 @@ $RECYCLE.BIN/
 /shareBrokeringWS/shareBrokeringWS/shareBrokeringWS/dist/
 
 *.zip
+/shareClient/shareClient/dist/

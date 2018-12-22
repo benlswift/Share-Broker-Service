@@ -7,6 +7,7 @@ import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.ws.Action;
+import javax.xml.ws.FaultAction;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
@@ -26,6 +27,144 @@ public interface ShareBroker {
 
     /**
      * 
+     * @param arg1
+     * @param arg0
+     * @return
+     *     returns int
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "add", targetNamespace = "http://shares/", className = "shares.Add")
+    @ResponseWrapper(localName = "addResponse", targetNamespace = "http://shares/", className = "shares.AddResponse")
+    @Action(input = "http://shares/shareBroker/addRequest", output = "http://shares/shareBroker/addResponse")
+    public int add(
+        @WebParam(name = "arg0", targetNamespace = "")
+        int arg0,
+        @WebParam(name = "arg1", targetNamespace = "")
+        int arg1);
+
+    /**
+     * 
+     * @param arg0
+     * @return
+     *     returns int
+     * @throws JAXBException_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "listAvailableShares", targetNamespace = "http://shares/", className = "shares.ListAvailableShares")
+    @ResponseWrapper(localName = "listAvailableSharesResponse", targetNamespace = "http://shares/", className = "shares.ListAvailableSharesResponse")
+    @Action(input = "http://shares/shareBroker/listAvailableSharesRequest", output = "http://shares/shareBroker/listAvailableSharesResponse", fault = {
+        @FaultAction(className = JAXBException_Exception.class, value = "http://shares/shareBroker/listAvailableShares/Fault/JAXBException")
+    })
+    public int listAvailableShares(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0)
+        throws JAXBException_Exception
+    ;
+
+    /**
+     * 
+     * @param arg0
+     * @return
+     *     returns java.lang.String
+     * @throws JAXBException_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "listCurrency", targetNamespace = "http://shares/", className = "shares.ListCurrency")
+    @ResponseWrapper(localName = "listCurrencyResponse", targetNamespace = "http://shares/", className = "shares.ListCurrencyResponse")
+    @Action(input = "http://shares/shareBroker/listCurrencyRequest", output = "http://shares/shareBroker/listCurrencyResponse", fault = {
+        @FaultAction(className = JAXBException_Exception.class, value = "http://shares/shareBroker/listCurrency/Fault/JAXBException")
+    })
+    public String listCurrency(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0)
+        throws JAXBException_Exception
+    ;
+
+    /**
+     * 
+     * @param arg0
+     * @return
+     *     returns int
+     * @throws JAXBException_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "listPrice", targetNamespace = "http://shares/", className = "shares.ListPrice")
+    @ResponseWrapper(localName = "listPriceResponse", targetNamespace = "http://shares/", className = "shares.ListPriceResponse")
+    @Action(input = "http://shares/shareBroker/listPriceRequest", output = "http://shares/shareBroker/listPriceResponse", fault = {
+        @FaultAction(className = JAXBException_Exception.class, value = "http://shares/shareBroker/listPrice/Fault/JAXBException")
+    })
+    public int listPrice(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0)
+        throws JAXBException_Exception
+    ;
+
+    /**
+     * 
+     * @param arg1
+     * @param arg0
+     * @return
+     *     returns int
+     * @throws JAXBException_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "updateShares", targetNamespace = "http://shares/", className = "shares.UpdateShares")
+    @ResponseWrapper(localName = "updateSharesResponse", targetNamespace = "http://shares/", className = "shares.UpdateSharesResponse")
+    @Action(input = "http://shares/shareBroker/updateSharesRequest", output = "http://shares/shareBroker/updateSharesResponse", fault = {
+        @FaultAction(className = JAXBException_Exception.class, value = "http://shares/shareBroker/updateShares/Fault/JAXBException")
+    })
+    public int updateShares(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0,
+        @WebParam(name = "arg1", targetNamespace = "")
+        int arg1)
+        throws JAXBException_Exception
+    ;
+
+    /**
+     * 
+     * @param arg0
+     * @return
+     *     returns java.lang.String
+     * @throws JAXBException_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "listSymbol", targetNamespace = "http://shares/", className = "shares.ListSymbol")
+    @ResponseWrapper(localName = "listSymbolResponse", targetNamespace = "http://shares/", className = "shares.ListSymbolResponse")
+    @Action(input = "http://shares/shareBroker/listSymbolRequest", output = "http://shares/shareBroker/listSymbolResponse", fault = {
+        @FaultAction(className = JAXBException_Exception.class, value = "http://shares/shareBroker/listSymbol/Fault/JAXBException")
+    })
+    public String listSymbol(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0)
+        throws JAXBException_Exception
+    ;
+
+    /**
+     * 
+     * @return
+     *     returns shares.ListSharesResponse.Return
+     * @throws JAXBException_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "listShares", targetNamespace = "http://shares/", className = "shares.ListShares")
+    @ResponseWrapper(localName = "listSharesResponse", targetNamespace = "http://shares/", className = "shares.ListSharesResponse")
+    @Action(input = "http://shares/shareBroker/listSharesRequest", output = "http://shares/shareBroker/listSharesResponse", fault = {
+        @FaultAction(className = JAXBException_Exception.class, value = "http://shares/shareBroker/listShares/Fault/JAXBException")
+    })
+    public shares.ListSharesResponse.Return listShares()
+        throws JAXBException_Exception
+    ;
+
+    /**
+     * 
      * @param arg3
      * @param arg2
      * @param arg4
@@ -33,12 +172,17 @@ public interface ShareBroker {
      * @param arg0
      * @return
      *     returns java.lang.String
+     * @throws IOException_Exception
+     * @throws JAXBException_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
     @RequestWrapper(localName = "addCompany", targetNamespace = "http://shares/", className = "shares.AddCompany")
     @ResponseWrapper(localName = "addCompanyResponse", targetNamespace = "http://shares/", className = "shares.AddCompanyResponse")
-    @Action(input = "http://shares/shareBroker/addCompanyRequest", output = "http://shares/shareBroker/addCompanyResponse")
+    @Action(input = "http://shares/shareBroker/addCompanyRequest", output = "http://shares/shareBroker/addCompanyResponse", fault = {
+        @FaultAction(className = IOException_Exception.class, value = "http://shares/shareBroker/addCompany/Fault/IOException"),
+        @FaultAction(className = JAXBException_Exception.class, value = "http://shares/shareBroker/addCompany/Fault/JAXBException")
+    })
     public String addCompany(
         @WebParam(name = "arg0", targetNamespace = "")
         String arg0,
@@ -49,18 +193,42 @@ public interface ShareBroker {
         @WebParam(name = "arg3", targetNamespace = "")
         int arg3,
         @WebParam(name = "arg4", targetNamespace = "")
-        String arg4);
+        String arg4)
+        throws IOException_Exception, JAXBException_Exception
+    ;
 
     /**
      * 
      * @return
      *     returns java.lang.String
+     * @throws Exception_Exception
      */
     @WebMethod
     @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "listShares", targetNamespace = "http://shares/", className = "shares.ListShares")
-    @ResponseWrapper(localName = "listSharesResponse", targetNamespace = "http://shares/", className = "shares.ListSharesResponse")
-    @Action(input = "http://shares/shareBroker/listSharesRequest", output = "http://shares/shareBroker/listSharesResponse")
-    public String listShares();
+    @RequestWrapper(localName = "listName", targetNamespace = "http://shares/", className = "shares.ListName")
+    @ResponseWrapper(localName = "listNameResponse", targetNamespace = "http://shares/", className = "shares.ListNameResponse")
+    @Action(input = "http://shares/shareBroker/listNameRequest", output = "http://shares/shareBroker/listNameResponse", fault = {
+        @FaultAction(className = Exception_Exception.class, value = "http://shares/shareBroker/listName/Fault/Exception")
+    })
+    public String listName()
+        throws Exception_Exception
+    ;
+
+    /**
+     * 
+     * @return
+     *     returns java.lang.String
+     * @throws Exception_Exception
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "listNames", targetNamespace = "http://shares/", className = "shares.ListNames")
+    @ResponseWrapper(localName = "listNamesResponse", targetNamespace = "http://shares/", className = "shares.ListNamesResponse")
+    @Action(input = "http://shares/shareBroker/listNamesRequest", output = "http://shares/shareBroker/listNamesResponse", fault = {
+        @FaultAction(className = Exception_Exception.class, value = "http://shares/shareBroker/listNames/Fault/Exception")
+    })
+    public String listNames()
+        throws Exception_Exception
+    ;
 
 }

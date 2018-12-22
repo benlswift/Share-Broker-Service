@@ -5,7 +5,14 @@
  */
 package shareclient;
 
+import java.io.IOException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+
+
 
 /**
  *
@@ -16,14 +23,15 @@ public class ShareClient {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         // TODO code application logic here
+        
         String name;
         String symbol;
         int availableShares;
         int shareValue;
         String currency;
-        
+        try{
         Scanner reader = new Scanner(System.in);  // Reading from System.in
         System.out.println("Enter a company name: ");
         name = reader.next(); 
@@ -36,16 +44,34 @@ public class ShareClient {
         System.out.println("Enter the currency: ");
         currency = reader.next(); // Scans the next token of the input as an int.
         //once finished
+        
+
         reader.close();
         
-        name = addCompany_1(name,symbol,availableShares,shareValue,currency);
+        name = addCompany(name,symbol,availableShares,shareValue,currency);
         System.out.println(name);
+        }
+        catch (Exception Ex)
+        {
+            System.out.println("Exception" + Ex );
+        }
+
+        
+        
     }
 
-    private static String addCompany_1(java.lang.String arg0, java.lang.String arg1, int arg2, int arg3, java.lang.String arg4) {
+
+    private static String addCompany(java.lang.String arg0, java.lang.String arg1, int arg2, int arg3, java.lang.String arg4) throws Exception {
         shares.ShareBroker_Service service = new shares.ShareBroker_Service();
         shares.ShareBroker port = service.getShareBrokerPort();
         return port.addCompany(arg0, arg1, arg2, arg3, arg4);
     }
+
+
+
+
+
+
+
     
 }

@@ -2,4 +2,7 @@
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
     <system systemId="http://localhost:9090/shareBroker/shareBroker?wsdl" uri="wsdl/localhost_9090/shareBroker/shareBroker.wsdl"/>
     <system systemId="http://localhost:9090/shareBroker/shareBroker?xsd=1" uri="wsdl/localhost_9090/shareBroker/shareBroker.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/shareBroker/shareBroker" uri="wsdl/localhost_8080/shareBroker/shareBroker.xml"/>
+    <system systemId="http://localhost:8080/shareBroker/shareBroker?WSDL" uri="wsdl/localhost_8080/shareBroker/shareBroker.wsdl"/>
+    <system systemId="http://localhost:8080/shareBroker/shareBroker?xsd=1" uri="wsdl/localhost_8080/shareBroker/shareBroker.xsd_1.xsd"/>
 </catalog>

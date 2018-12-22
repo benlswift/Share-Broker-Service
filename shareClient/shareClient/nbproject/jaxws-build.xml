@@ -33,5 +33,22 @@
         <delete dir="${build.generated.dir}/jax-wsCache/shareBroker_1"/>
         <delete dir="${build.generated.sources.dir}/jax-ws/shares"/>
     </target>
-    <target name="wsimport-client-generate" depends="wsimport-client-shareBroker_1"/>
+    <target name="wsimport-client-shareBroker" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/shareBroker"/>
+        <property name="wsdl-shareBroker" location="xml-resources/web-service-references/shareBroker/wsdl/localhost_8080/shareBroker/shareBroker.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/shareBroker" destdir="${build.generated.dir}/jax-wsCache/shareBroker" wsdl="${wsdl-shareBroker}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/shareBroker/shareBroker?WSDL" xnocompile="true" xendorsed="true">
+            <depends file="${wsdl-shareBroker}"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/shareBroker"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/shareBroker">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-shareBroker" depends="-init-project">
+        <delete dir="${build.generated.dir}/jax-wsCache/shareBroker"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/shares"/>
+    </target>
+    <target name="wsimport-client-generate" depends="wsimport-client-shareBroker_1, wsimport-client-shareBroker"/>
 </project>
