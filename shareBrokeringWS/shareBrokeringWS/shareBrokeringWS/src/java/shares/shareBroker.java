@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.WebServiceRef;
+import java.util.*;
 
 /**
  *
@@ -98,18 +99,6 @@ public class shareBroker {
         return theCompanies;
     }
    
-    public String listName() throws Exception
-    {
-        String name = "BEN";
-                /*new String();
-        
-        for (int i = 0; i < listShares().getCompanyCollection().size();i++)
-        {
-               name = listShares().getCompanyCollection().get(0).getName();
-        }
-                */
-        return name;
-    }
     public String listSymbol(String name) throws JAXBException
     {
         String sym = new String();
@@ -145,7 +134,7 @@ public class shareBroker {
         {
             if (listShares().getCompanyCollection().get(i).getName().equals(name))
             {
-               price = listShares().getCompanyCollection().get(0).getSharePrice().getValue();
+               price = listShares().getCompanyCollection().get(i).getSharePrice().getValue();
             }
         }
         return price;
@@ -165,45 +154,65 @@ public class shareBroker {
         return curr;
     }
     
-    public int updateShares(String name, int numShares) throws JAXBException
+    public AllCompanies updateShares(String name, int numShares) throws JAXBException, FileNotFoundException
     {
+        //get all shares
+        //put into AllCompanies instance
+        //find company to update
+        //update thier shares
+        //save to AllCompanies instance
+        //jaxbm the same as addCompany
+        
+        Company com;
+        AllCompanies theUpdatedCompanies = new AllCompanies();
+        java.util.List<Company> companyList =  theUpdatedCompanies.getCompanyCollection();
+        int idNum = 0;
         for (int i = 0; i < listShares().getCompanyCollection().size();i++)
         {
+            Company com1 = listShares().getCompanyCollection().get(i);
+            companyList.add(com1);
             if (listShares().getCompanyCollection().get(i).getName().equals(name))
             {
-               listShares().getCompanyCollection().get(i).setAvailableShares(numShares);
+                idNum = i;
+                listShares().getCompanyCollection().get(i).setAvailableShares(numShares);
+                System.out.println("Updated company: " + listShares().getCompanyCollection().get(i).getName());
             }
         }
+        listShares().getCompanyCollection().get(idNum).setAvailableShares(numShares);
+        theUpdatedCompanies.getCompanyCollection().get(idNum).setAvailableShares(numShares);
         
-        //split to new function
+        FileOutputStream fout = new FileOutputStream("C:\\Users\\bensw\\OneDrive - Nottingham Trent University\\Year 3\\Cloud Computing\\Assignment\\Working Version\\shareBrokeringWS\\shareBrokeringWS\\shareBrokeringWS/output.xml");
         try {            
-            javax.xml.bind.JAXBContext jaxbCtx = javax.xml.bind.JAXBContext.newInstance(listShares().getCompanyCollection().getClass().getPackage().getName());
+            javax.xml.bind.JAXBContext jaxbCtx = javax.xml.bind.JAXBContext.newInstance(theUpdatedCompanies.getClass().getPackage().getName());
             javax.xml.bind.Marshaller marshaller = jaxbCtx.createMarshaller();
             marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_ENCODING, "UTF-8"); //NOI18N
             marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             //BufferedWriter writer = new BufferedWriter(new FileWriter("‪C:\\\\Users\\\\bensw\\\\OneDrive - Nottingham Trent University\\\\Year 3\\\\Cloud Computing\\\\Assignment\\\\Working Version\\\\shareBrokeringWS\\\\shareBrokeringWS\\\\shareBrokeringWS/samplefile1.txt"));
-            File file = new File("‪output2.xml");
-            marshaller.marshal(listShares().getCompanyCollection(), file);
+            //File file = new File("‪C:\\Users\\bensw\\Desktop/output2.xml");
+            marshaller.marshal(theUpdatedCompanies, fout);
+            System.out.println("File updated:" + fout.toString());
             //marshaller.marshal(quickXML, System.out);
         } catch (javax.xml.bind.JAXBException ex) {
             // XXXTODO Handle exception
             java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE, null, ex); //NOI18N
         }
-        return numShares;
+        return theUpdatedCompanies;
     }
+
 
     /**
      * Web service operation
      * @throws java.lang.Exception
      */
-    public String listNames() throws Exception{
+    public java.util.List<String> listNames() throws Exception{
         String name = new String();
-        
+        java.util.List listName = new ArrayList();
         for (int i = 0; i < listShares().getCompanyCollection().size();i++)
         {
-               name = listShares().getCompanyCollection().get(0).getName();
+               name = listShares().getCompanyCollection().get(i).getName();
+               listName.add(name);
         }
-        return name;
+        return listName;
     }
 
     /**
@@ -214,12 +223,96 @@ public class shareBroker {
         int ans = i+j;
         return ans;
     }
-
+    // 1 unit of arg0 = return value in arg1
+    //eg. arg0 = GBP, arg1 = EUR
+    //return = 1.17
+    //hence GBP1 = EUR1.17
     private double getConversionRate(java.lang.String arg0, java.lang.String arg1) {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         docwebservices.CurrencyConversionWS port = service.getCurrencyConversionWSPort();
         return port.getConversionRate(arg0, arg1);
     }
+
+    /**
+     * Web service operation
+     */
+    public String searchName(String name) throws Exception {
+        //TODO write your implementation code here:
+        for (int i = 0; i < listShares().getCompanyCollection().size();i++)
+        {
+            if (listShares().getCompanyCollection().get(i).getName().equals(name)){
+               name = listShares().getCompanyCollection().get(i).getName();
+            }
+        }
+        return name;
+    }
+
+    /**
+     * Web service operation
+     */
+    public String searchHighestPrice() throws Exception {        
+        int highPrice = 0;
+        int highCompany = 0;
+        for (int i = 0; i < listShares().getCompanyCollection().size();i++)
+        {
+            if (listShares().getCompanyCollection().get(i).getSharePrice().getValue() >= highPrice)
+            {
+                highPrice = listShares().getCompanyCollection().get(i).getSharePrice().getValue();
+                highCompany = i;
+            }
+        }
+        return "The company with the highest share price is " + listShares().getCompanyCollection().get(highCompany).getName() + " at " + highPrice + listShares().getCompanyCollection().get(highCompany).getSharePrice().getCurrency() ;
+    }
+
+    /**
+     * Web service operation
+     */
+    public String searchSymbol(String symbol) throws Exception {
+        String company = new String();
+        for (int i = 0; i < listShares().getCompanyCollection().size();i++)
+        {
+            if (listShares().getCompanyCollection().get(i).getSymbol().equals(symbol)){
+               company = listShares().getCompanyCollection().get(i).getName();
+            }
+        }
+        return company;
+    }
+
+    private java.util.List<java.lang.String> getCurrencyCodes() {
+        // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
+        // If the calling of port operations may lead to race condition some synchronization is required.
+        docwebservices.CurrencyConversionWS port = service.getCurrencyConversionWSPort();
+        return port.getCurrencyCodes();
+    }
+
+    /**
+     * Web service operation
+     */
+    public String searchBySymbol(String symbol) throws Exception {
+        String name = new String();
+        for (int i = 0; i < listShares().getCompanyCollection().size();i++)
+        {
+            if (listShares().getCompanyCollection().get(i).getSymbol().equals(symbol)){
+               name = listShares().getCompanyCollection().get(i).getName();
+            }
+        }
+        return name;
+    }
+
+    /**
+     * Web service operation
+     */
+    public double convert(String intitialCurrency, String newCurrency, int price) {
+        double convert = 0;
+        double newPrice = 0;
+        convert = getConversionRate(intitialCurrency,newCurrency);
+        newPrice = price * convert;
+       
+        return newPrice;
+    }
+    
+    
+
        
 }
