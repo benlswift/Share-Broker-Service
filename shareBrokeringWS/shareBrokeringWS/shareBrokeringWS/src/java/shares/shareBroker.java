@@ -92,10 +92,6 @@ public class shareBroker {
             // XXXTODO Handle exception
             java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE, null, ex); //NOI18N
         }
-        System.out.println(theCompanies);
-        Company com;
-        com = theCompanies.getCompanyCollection().get(0);
-        System.out.println(com.getName());
         return theCompanies;
     }
    
@@ -148,7 +144,7 @@ public class shareBroker {
         {
             if (listShares().getCompanyCollection().get(i).getName().equals(name))
             {
-               curr = listShares().getCompanyCollection().get(0).getSharePrice().getCurrency();
+               curr = listShares().getCompanyCollection().get(i).getSharePrice().getCurrency();
             }
         }
         return curr;
@@ -307,12 +303,66 @@ public class shareBroker {
         double convert = 0;
         double newPrice = 0;
         convert = getConversionRate(intitialCurrency,newCurrency);
+        System.out.println("Conversion Rate: " + convert);
         newPrice = price * convert;
        
         return newPrice;
     }
-    
-    
-
+         
+     public AllCompanies updateCurrencyPrice(String newCurrency, double newPrice, String name) throws JAXBException, FileNotFoundException
+    {
+        Company com;
+        AllCompanies theUpdatedCompanies = new AllCompanies();
+        java.util.List<Company> companyList =  theUpdatedCompanies.getCompanyCollection();
+        int idNum = 0;
+        for (int i = 0; i < listShares().getCompanyCollection().size();i++)
+        {
+            Company com1 = listShares().getCompanyCollection().get(i);
+            companyList.add(com1);
+            if (listShares().getCompanyCollection().get(i).getName().equals(name))
+            {
+                idNum = i;
+                listShares().getCompanyCollection().get(i).sharePrice.setValue((int) newPrice);
+                listShares().getCompanyCollection().get(i).sharePrice.setCurrency(newCurrency);
+                System.out.println("Updated company: " + listShares().getCompanyCollection().get(i).getName());
+            }
+        }
+        
+        theUpdatedCompanies.getCompanyCollection().get(idNum).sharePrice.setCurrency(newCurrency);
+        theUpdatedCompanies.getCompanyCollection().get(idNum).sharePrice.setValue((int) newPrice);
+        
+        FileOutputStream fout = new FileOutputStream("C:\\Users\\bensw\\OneDrive - Nottingham Trent University\\Year 3\\Cloud Computing\\Assignment\\Working Version\\shareBrokeringWS\\shareBrokeringWS\\shareBrokeringWS/output.xml");
+        try {            
+            javax.xml.bind.JAXBContext jaxbCtx = javax.xml.bind.JAXBContext.newInstance(theUpdatedCompanies.getClass().getPackage().getName());
+            javax.xml.bind.Marshaller marshaller = jaxbCtx.createMarshaller();
+            marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_ENCODING, "UTF-8"); //NOI18N
+            marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            //BufferedWriter writer = new BufferedWriter(new FileWriter("‪C:\\\\Users\\\\bensw\\\\OneDrive - Nottingham Trent University\\\\Year 3\\\\Cloud Computing\\\\Assignment\\\\Working Version\\\\shareBrokeringWS\\\\shareBrokeringWS\\\\shareBrokeringWS/samplefile1.txt"));
+            //File file = new File("‪C:\\Users\\bensw\\Desktop/output2.xml");
+            marshaller.marshal(theUpdatedCompanies, fout);
+            System.out.println("File updated:" + fout.toString());
+            //marshaller.marshal(quickXML, System.out);
+        } catch (javax.xml.bind.JAXBException ex) {
+            // XXXTODO Handle exception
+            java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE, null, ex); //NOI18N
+        }
+        return theUpdatedCompanies;
+    }
+    public String searchLowestValue() throws JAXBException
+    {
+        int lowPrice = 0;
+        int lowCompany = 0;
+        lowPrice = listShares().getCompanyCollection().get(0).getSharePrice().getValue();
+        for (int i = 0; i < listShares().getCompanyCollection().size();i++)
+        {
+            if (listShares().getCompanyCollection().get(i).getSharePrice().getValue() <= lowPrice)
+            {
+                lowPrice = listShares().getCompanyCollection().get(i).getSharePrice().getValue();
+                lowCompany = i;
+            }
+        }
+        return "The company with the lowest share price is " + listShares().getCompanyCollection().get(lowCompany).getName() + " at " + lowPrice + listShares().getCompanyCollection().get(lowCompany).getSharePrice().getCurrency() ;
+    }
+  
        
 }

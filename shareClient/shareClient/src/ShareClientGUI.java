@@ -23,6 +23,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import shares.FileNotFoundException_Exception;
 import shares.JAXBException_Exception;
+import shares.ListSharesResponse;
+import shares.UpdateCurrencyPriceResponse;
 import shares.UpdateSharesResponse;
 
 /*
@@ -71,6 +73,7 @@ public class ShareClientGUI extends javax.swing.JFrame {
         button1 = new java.awt.Button();
         jComboBox1 = new javax.swing.JComboBox<>();
         convertBtn1 = new java.awt.Button();
+        button2 = new java.awt.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -90,6 +93,12 @@ public class ShareClientGUI extends javax.swing.JFrame {
         listNamesBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 listNamesBtnActionPerformed(evt);
+            }
+        });
+
+        detailsListBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                detailsListBoxActionPerformed(evt);
             }
         });
 
@@ -142,8 +151,8 @@ public class ShareClientGUI extends javax.swing.JFrame {
             }
         });
 
-        saveConvertCurr.setActionCommand("Save Conversion");
-        saveConvertCurr.setLabel("Save Conversion");
+        saveConvertCurr.setActionCommand("Convert To");
+        saveConvertCurr.setLabel("Convert To");
         saveConvertCurr.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveConvertCurrActionPerformed(evt);
@@ -157,7 +166,7 @@ public class ShareClientGUI extends javax.swing.JFrame {
             }
         });
 
-        button1.setLabel("button1");
+        button1.setLabel("Search Lowest Price");
         button1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button1ActionPerformed(evt);
@@ -166,10 +175,18 @@ public class ShareClientGUI extends javax.swing.JFrame {
 
         jComboBox1.setModel(getArray());
 
-        convertBtn1.setLabel("Convert to");
+        convertBtn1.setActionCommand("Save Convert");
+        convertBtn1.setLabel("Save Conversion");
         convertBtn1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 convertBtn1ActionPerformed(evt);
+            }
+        });
+
+        button2.setLabel("Convert All");
+        button2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button2ActionPerformed(evt);
             }
         });
 
@@ -185,16 +202,16 @@ public class ShareClientGUI extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(convertBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(saveConvertCurr, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(button2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, 128, Short.MAX_VALUE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(saveConvertCurr, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 242, Short.MAX_VALUE)
-                        .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(248, 248, 248))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(convertBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(248, 547, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(detailsListBox, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -207,17 +224,19 @@ public class ShareClientGUI extends javax.swing.JFrame {
                                 .addGap(10, 10, 10)
                                 .addComponent(ConvertedField, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(nameSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
-                                    .addComponent(symbolSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(searchSymbolBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(searchNameBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(searchListBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(highPriceBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(button1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(nameSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
+                                        .addComponent(symbolSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(searchSymbolBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(searchNameBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(searchListBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(highPriceBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
@@ -246,21 +265,22 @@ public class ShareClientGUI extends javax.swing.JFrame {
                         .addComponent(detailsListBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(listNamesListBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(highPriceBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(4, 4, 4)
+                            .addComponent(ConvertedField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(saveConvertCurr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(highPriceBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(convertBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(ConvertedField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(saveConvertCurr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(225, Short.MAX_VALUE))
+                    .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(convertBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(206, Short.MAX_VALUE))
         );
 
         listNamesListBox.getAccessibleContext().setAccessibleName("listNamesBox");
@@ -316,7 +336,7 @@ public class ShareClientGUI extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
 
-            for (int i = 0; i < listNames().size();i++ )
+            for (int i = 0; i < listNames().size() ;i++ )
             {
                 listNamesListBox.add(listNames().get(i));
             }
@@ -417,12 +437,9 @@ public class ShareClientGUI extends javax.swing.JFrame {
         }    }//GEN-LAST:event_updateSharesActionPerformed
 
     private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
-        try {
-            // TODO add your handling code here:
-            JSON();
-        } catch (IOException ex) {
-            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
+        try {        
+            searchListBox.add(searchLowestValue());
+        } catch (JAXBException_Exception ex) {
             Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_button1ActionPerformed
@@ -432,8 +449,110 @@ public class ShareClientGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_listNamesListBoxMouseEntered
 
     private void convertBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertBtn1ActionPerformed
-        // TODO add your handling code here:
+        String name = new String();
+        int selectedCode = 0;
+        name = listNamesListBox.getSelectedItem();
+        selectedCode = jComboBox1.getSelectedIndex();
+        String currency = new String();
+        double newPrice = 0;
+        String newCurrency = new String();
+        int valueBefore = 0;
+        try {
+            currency = listCurrency(name);
+            valueBefore = listPrice(name);
+            newCurrency = getCurrencyCodes().get(selectedCode).substring(0, 3);
+            newPrice = convert(currency,newCurrency,valueBefore);
+            updateCurrencyPrice(newCurrency,newPrice,name);
+        } catch (Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+ 
+        listNamesListBox.removeAll();
+        detailsListBox.removeAll();
+        try {
+            for (int i = 0; i < listNames().size();i++ )
+            {
+                listNamesListBox.add(listNames().get(i));
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_convertBtn1ActionPerformed
+
+    private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed
+        String name = new String();
+        int selectedCode = 0;
+        //name = listNamesListBox.getSelectedItem();
+        selectedCode = jComboBox1.getSelectedIndex();
+        String currency = new String();
+        double newPrice = 0;
+        String newCurrency = new String();
+        int valueBefore = 0;
+        try {
+            for (int i =0; i < listNames().size();i++)
+            {
+                name = listNames().get(i);
+                currency = listCurrency(name);
+                valueBefore = listPrice(name);
+                newCurrency = getCurrencyCodes().get(selectedCode).substring(0, 3);
+                newPrice = convert(currency,newCurrency,valueBefore);
+                updateCurrencyPrice(newCurrency,newPrice,name);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+ 
+        listNamesListBox.removeAll();
+        detailsListBox.removeAll();
+        try {
+            for (int i = 0; i < listNames().size();i++ )
+            {
+                listNamesListBox.add(listNames().get(i));
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+//        
+//        try {
+//            //Take all companies
+//            //pass them through the currency converter
+//            //pass output to update shares function
+//            //write new file
+//            //update listbox
+//            //go again... etc.
+//            int selectedCode = 0;
+//            String name = new String();
+//            String initCurr = new String();
+//            String newCurr = new String();
+//            double newPrice = 0;
+//            for (int i=0; i < listNames().size() ; i++ )
+//            {
+//                selectedCode = jComboBox1.getSelectedIndex();
+//                name = listNames().get(i);
+//                initCurr = listCurrency(name);
+//                System.out.println(name + " initCurr" + initCurr);
+//                newPrice = convert(initCurr,newCurr,listPrice(name));
+//                System.out.println("newPrice" + newPrice);
+//                newCurr = getCurrencyCodes().get(selectedCode).substring(0, 3);
+//                System.out.println("newCurr:" + newCurr);
+//                updateCurrencyPrice(newCurr,newPrice,name);
+//            }
+//            listNamesListBox.removeAll();
+//            detailsListBox.removeAll();
+//            for (int i = 0; i < listNames().size();i++ )
+//            {
+//                listNamesListBox.add(listNames().get(i));
+//            }
+//        } catch (Exception ex) {
+//            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+    }//GEN-LAST:event_button2ActionPerformed
+
+    private void detailsListBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_detailsListBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_detailsListBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -473,6 +592,7 @@ public class ShareClientGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.TextField ConvertedField;
     private java.awt.Button button1;
+    private java.awt.Button button2;
     private java.awt.Button convertBtn1;
     private java.awt.List detailsListBox;
     private java.awt.Button highPriceBtn;
@@ -611,6 +731,28 @@ public class ShareClientGUI extends javax.swing.JFrame {
         shares.ShareBroker port = service.getShareBrokerPort();
         return port.updateShares(arg0, arg1);
     }
+
+    private static ListSharesResponse.Return listShares() throws JAXBException_Exception {
+        shares.ShareBroker_Service service = new shares.ShareBroker_Service();
+        shares.ShareBroker port = service.getShareBrokerPort();
+        return port.listShares();
+    }
+
+
+    private static UpdateCurrencyPriceResponse.Return updateCurrencyPrice(java.lang.String arg0, double arg1, java.lang.String arg2) throws JAXBException_Exception, FileNotFoundException_Exception {
+        shares.ShareBroker_Service service = new shares.ShareBroker_Service();
+        shares.ShareBroker port = service.getShareBrokerPort();
+        return port.updateCurrencyPrice(arg0, arg1, arg2);
+    }
+
+    private static String searchLowestValue() throws JAXBException_Exception {
+        shares.ShareBroker_Service service = new shares.ShareBroker_Service();
+        shares.ShareBroker port = service.getShareBrokerPort();
+        return port.searchLowestValue();
+    }
+
+
+
     
 }
    
