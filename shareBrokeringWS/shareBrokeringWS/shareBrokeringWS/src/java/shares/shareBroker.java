@@ -60,7 +60,7 @@ public class shareBroker {
         price.setValue(value);
         com.setSharePrice(price);
         companyList.add(com);
-        FileOutputStream fout = new FileOutputStream("fileout.xml");
+        FileOutputStream fout = new FileOutputStream("C:\\Users\\bensw\\OneDrive - Nottingham Trent University\\Year 3\\Cloud Computing\\Assignment\\Working Version\\shareBrokeringWS\\shareBrokeringWS\\shareBrokeringWS/output.xml");
         try {            
             javax.xml.bind.JAXBContext jaxbCtx = javax.xml.bind.JAXBContext.newInstance(theCompanies.getClass().getPackage().getName());
             javax.xml.bind.Marshaller marshaller = jaxbCtx.createMarshaller();
@@ -363,6 +363,36 @@ public class shareBroker {
         }
         return "The company with the lowest share price is " + listShares().getCompanyCollection().get(lowCompany).getName() + " at " + lowPrice + listShares().getCompanyCollection().get(lowCompany).getSharePrice().getCurrency() ;
     }
-  
-       
+  public String removeCompany(String name) throws JAXBException, FileNotFoundException{
+        AllCompanies theCompanies = new AllCompanies();
+        java.util.List<Company> companyList =  theCompanies.getCompanyCollection();
+        
+        for (int i = 0; i < listShares().getCompanyCollection().size();i++)
+        {
+            if (listShares().getCompanyCollection().get(i).getName().equals(name))
+            {
+                //do nothing
+            }
+            else{
+            Company com1 = listShares().getCompanyCollection().get(i);
+            companyList.add(com1);
+            }
+        }
+
+        FileOutputStream fout = new FileOutputStream("C:\\Users\\bensw\\OneDrive - Nottingham Trent University\\Year 3\\Cloud Computing\\Assignment\\Working Version\\shareBrokeringWS\\shareBrokeringWS\\shareBrokeringWS/output.xml");
+        try {            
+            javax.xml.bind.JAXBContext jaxbCtx = javax.xml.bind.JAXBContext.newInstance(theCompanies.getClass().getPackage().getName());
+            javax.xml.bind.Marshaller marshaller = jaxbCtx.createMarshaller();
+            marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_ENCODING, "UTF-8"); //NOI18N
+            marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            //BufferedWriter writer = new BufferedWriter(new FileWriter("‪C:\\\\Users\\\\bensw\\\\OneDrive - Nottingham Trent University\\\\Year 3\\\\Cloud Computing\\\\Assignment\\\\Working Version\\\\shareBrokeringWS\\\\shareBrokeringWS\\\\shareBrokeringWS/samplefile1.txt"));
+            //File file = new File("‪C:\\Users\\bensw\\Desktop/output2.xml");
+            marshaller.marshal(theCompanies, fout);
+            //marshaller.marshal(quickXML, System.out);
+        } catch (javax.xml.bind.JAXBException ex) {
+            // XXXTODO Handle exception
+            java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE, null, ex); //NOI18N
+        }
+        return "Company removed";
+  }
 }
