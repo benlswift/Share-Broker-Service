@@ -1,5 +1,6 @@
 
 import com.google.gson.Gson;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,20 +13,27 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.DefaultComboBoxModel;
+import static javax.swing.JOptionPane.showMessageDialog;
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import shares.Exception_Exception;
 import shares.FileNotFoundException_Exception;
 import shares.IOException_Exception;
 import shares.JAXBException_Exception;
 import shares.ListSharesResponse;
+import shares.MalformedURLException_Exception;
+import shares.ParseException_Exception;
 import shares.UpdateCurrencyPriceResponse;
+import shares.UpdatePriceXMLResponse;
 import shares.UpdateSharesResponse;
 
 /*
@@ -43,9 +51,11 @@ public class ShareClientGUI extends javax.swing.JFrame {
     /**
      * Creates new form ShareClientGUI
      */
+
     public ShareClientGUI() {
         
         initComponents();
+        autoLoad();
     }
 
     /**
@@ -61,27 +71,20 @@ public class ShareClientGUI extends javax.swing.JFrame {
         textField3 = new java.awt.TextField();
         label6 = new java.awt.Label();
         textField6 = new java.awt.TextField();
+        label11 = new java.awt.Label();
+        jFrame1 = new javax.swing.JFrame();
+        scrollPane1 = new java.awt.ScrollPane();
+        jProgressBar1 = new javax.swing.JProgressBar();
         jPanel1 = new javax.swing.JPanel();
-        listNamesListBox = new java.awt.List();
-        listNamesBtn = new java.awt.Button();
-        detailsListBox = new java.awt.List();
-        nameSearchField = new java.awt.TextField();
-        searchSymbolBtn = new java.awt.Button();
-        symbolSearchField = new java.awt.TextField();
-        searchNameBtn1 = new java.awt.Button();
-        searchListBox = new java.awt.List();
-        highPriceBtn = new java.awt.Button();
+        panel1 = new java.awt.Panel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        label12 = new java.awt.Label();
         saveConvertCurr = new java.awt.Button();
         ConvertedField = new java.awt.TextField();
-        updateShares = new java.awt.Button();
-        newSharesField = new java.awt.TextField();
-        button1 = new java.awt.Button();
-        jComboBox1 = new javax.swing.JComboBox<>();
         convertBtn1 = new java.awt.Button();
         button2 = new java.awt.Button();
-        button3 = new java.awt.Button();
-        compNameField = new java.awt.TextField();
-        label1 = new java.awt.Label();
+        panel2 = new java.awt.Panel();
+        label8 = new java.awt.Label();
         label2 = new java.awt.Label();
         compSymbolField = new java.awt.TextField();
         label4 = new java.awt.Label();
@@ -90,7 +93,38 @@ public class ShareClientGUI extends javax.swing.JFrame {
         priceField = new java.awt.TextField();
         label7 = new java.awt.Label();
         currencyField = new java.awt.TextField();
+        compNameField = new java.awt.TextField();
+        label1 = new java.awt.Label();
+        button3 = new java.awt.Button();
+        panel3 = new java.awt.Panel();
+        button4 = new java.awt.Button();
+        detailsListBox = new java.awt.List();
+        updateShares = new java.awt.Button();
+        jSpinner1 = new javax.swing.JSpinner();
+        listNamesListBox = new java.awt.List();
+        listNamesBtn = new java.awt.Button();
         removeCompany = new java.awt.Button();
+        label10 = new java.awt.Label();
+        panel4 = new java.awt.Panel();
+        label9 = new java.awt.Label();
+        searchListBox = new java.awt.List();
+        nameSearchField = new java.awt.TextField();
+        searchSymbolBtn = new java.awt.Button();
+        symbolSearchField = new java.awt.TextField();
+        searchNameBtn1 = new java.awt.Button();
+        highPriceBtn = new java.awt.Button();
+        button1 = new java.awt.Button();
+        button5 = new java.awt.Button();
+        button6 = new java.awt.Button();
+        textField2 = new java.awt.TextField();
+        jSpinner2 = new javax.swing.JSpinner();
+        label14 = new java.awt.Label();
+        label15 = new java.awt.Label();
+        label16 = new java.awt.Label();
+        label17 = new java.awt.Label();
+        jSpinner3 = new javax.swing.JSpinner();
+        textField1 = new java.awt.TextField();
+        label13 = new java.awt.Label();
 
         label3.setText("Company Symbol");
 
@@ -98,8 +132,156 @@ public class ShareClientGUI extends javax.swing.JFrame {
 
         label6.setText("Share Price");
 
+        label11.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        label11.setText("View All Companies");
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        panel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jComboBox1.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        jComboBox1.setModel(getArray());
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+        panel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(221, 63, 204, 46));
+
+        label12.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        label12.setText("Convert Share Price");
+        panel1.add(label12, new org.netbeans.lib.awtextra.AbsoluteConstraints(104, 0, -1, -1));
+
+        saveConvertCurr.setActionCommand("Convert To");
+        saveConvertCurr.setBackground(new java.awt.Color(255, 255, 255));
+        saveConvertCurr.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        saveConvertCurr.setLabel("Convert To");
+        saveConvertCurr.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveConvertCurrActionPerformed(evt);
+            }
+        });
+        panel1.add(saveConvertCurr, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 63, 211, 46));
+
+        ConvertedField.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        panel1.add(ConvertedField, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 135, 425, 42));
+
+        convertBtn1.setActionCommand("Save Convert");
+        convertBtn1.setBackground(new java.awt.Color(255, 255, 255));
+        convertBtn1.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        convertBtn1.setLabel("Save Conversion");
+        convertBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                convertBtn1ActionPerformed(evt);
+            }
+        });
+        panel1.add(convertBtn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 187, 425, 40));
+
+        button2.setBackground(new java.awt.Color(255, 255, 255));
+        button2.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        button2.setLabel("Convert All");
+        button2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button2ActionPerformed(evt);
+            }
+        });
+        panel1.add(button2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 246, 425, 41));
+
+        panel2.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        panel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        label8.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        label8.setText("Add Companies");
+        panel2.add(label8, new org.netbeans.lib.awtextra.AbsoluteConstraints(182, 0, -1, -1));
+
+        label2.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        label2.setText("Company Symbol");
+        panel2.add(label2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 87, -1, -1));
+
+        compSymbolField.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        panel2.add(compSymbolField, new org.netbeans.lib.awtextra.AbsoluteConstraints(354, 87, 164, -1));
+
+        label4.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        label4.setText("Available Shares");
+        panel2.add(label4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 128, 334, -1));
+
+        avSharesField.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        panel2.add(avSharesField, new org.netbeans.lib.awtextra.AbsoluteConstraints(354, 128, 164, -1));
+
+        label5.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        label5.setText("Share Price");
+        panel2.add(label5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 169, -1, -1));
+
+        priceField.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        panel2.add(priceField, new org.netbeans.lib.awtextra.AbsoluteConstraints(354, 169, 164, -1));
+
+        label7.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        label7.setText("Currency");
+        panel2.add(label7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 206, -1, -1));
+
+        currencyField.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        panel2.add(currencyField, new org.netbeans.lib.awtextra.AbsoluteConstraints(354, 206, 164, -1));
+
+        compNameField.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        panel2.add(compNameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(354, 44, 164, -1));
+
+        label1.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        label1.setText("Company Name");
+        panel2.add(label1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 44, -1, -1));
+
+        button3.setBackground(new java.awt.Color(255, 255, 255));
+        button3.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        button3.setLabel("Add Company");
+        button3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button3ActionPerformed(evt);
+            }
+        });
+        panel2.add(button3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 243, 508, 41));
+
+        panel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        button4.setBackground(new java.awt.Color(255, 255, 255));
+        button4.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        button4.setLabel("Update Share Price");
+        button4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button4ActionPerformed(evt);
+            }
+        });
+        panel3.add(button4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 285, 439, 43));
+
+        detailsListBox.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        detailsListBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                detailsListBoxActionPerformed(evt);
+            }
+        });
+        panel3.add(detailsListBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 85, 239, 149));
+
+        updateShares.setBackground(new java.awt.Color(255, 255, 255));
+        updateShares.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        updateShares.setLabel("Update Shares");
+        updateShares.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateSharesActionPerformed(evt);
+            }
+        });
+        panel3.add(updateShares, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 244, 239, -1));
+        panel3.add(jSpinner1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 244, 190, 31));
+
+        listNamesListBox.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         listNamesListBox.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 listNamesListBoxMouseEntered(evt);
@@ -110,21 +292,50 @@ public class ShareClientGUI extends javax.swing.JFrame {
                 listNamesListBoxActionPerformed(evt);
             }
         });
+        panel3.add(listNamesListBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 85, 190, 149));
+        listNamesListBox.getAccessibleContext().setAccessibleName("listNamesBox");
 
         listNamesBtn.setActionCommand("listNamesBtn");
-        listNamesBtn.setLabel("List Names");
+        listNamesBtn.setBackground(new java.awt.Color(255, 255, 255));
+        listNamesBtn.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        listNamesBtn.setLabel("List Companies");
         listNamesBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 listNamesBtnActionPerformed(evt);
             }
         });
+        panel3.add(listNamesBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 44, 190, -1));
+        listNamesBtn.getAccessibleContext().setAccessibleName("listNamesBtn");
 
-        detailsListBox.addActionListener(new java.awt.event.ActionListener() {
+        removeCompany.setBackground(new java.awt.Color(255, 255, 255));
+        removeCompany.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        removeCompany.setLabel("Remove Company");
+        removeCompany.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                detailsListBoxActionPerformed(evt);
+                removeCompanyActionPerformed(evt);
             }
         });
+        panel3.add(removeCompany, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 44, 239, -1));
 
+        label10.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        label10.setText("View All Companies");
+        panel3.add(label10, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 0, -1, -1));
+
+        panel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        label9.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        label9.setText("Search Companies");
+        panel4.add(label9, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 0, -1, -1));
+
+        searchListBox.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        searchListBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchListBoxActionPerformed(evt);
+            }
+        });
+        panel4.add(searchListBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 126, 492, 68));
+
+        nameSearchField.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         nameSearchField.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 nameSearchFieldMouseClicked(evt);
@@ -135,14 +346,19 @@ public class ShareClientGUI extends javax.swing.JFrame {
                 nameSearchFieldActionPerformed(evt);
             }
         });
+        panel4.add(nameSearchField, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 44, 184, 31));
 
+        searchSymbolBtn.setBackground(new java.awt.Color(255, 255, 255));
+        searchSymbolBtn.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         searchSymbolBtn.setLabel("Search Symbol");
         searchSymbolBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchSymbolBtnActionPerformed(evt);
             }
         });
+        panel4.add(searchSymbolBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 85, 298, -1));
 
+        symbolSearchField.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         symbolSearchField.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 symbolSearchFieldMouseClicked(evt);
@@ -153,430 +369,226 @@ public class ShareClientGUI extends javax.swing.JFrame {
                 symbolSearchFieldActionPerformed(evt);
             }
         });
+        panel4.add(symbolSearchField, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 85, 184, 31));
 
+        searchNameBtn1.setBackground(new java.awt.Color(255, 255, 255));
+        searchNameBtn1.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         searchNameBtn1.setLabel("Search Name");
         searchNameBtn1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchNameBtn1ActionPerformed(evt);
             }
         });
+        panel4.add(searchNameBtn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 44, 298, -1));
 
-        searchListBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchListBoxActionPerformed(evt);
-            }
-        });
-
+        highPriceBtn.setBackground(new java.awt.Color(255, 255, 255));
+        highPriceBtn.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         highPriceBtn.setLabel("Search Highest Price");
         highPriceBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 highPriceBtnActionPerformed(evt);
             }
         });
+        panel4.add(highPriceBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 249, 492, 37));
 
-        saveConvertCurr.setActionCommand("Convert To");
-        saveConvertCurr.setLabel("Convert To");
-        saveConvertCurr.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveConvertCurrActionPerformed(evt);
-            }
-        });
-
-        updateShares.setLabel("Update Shares");
-        updateShares.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateSharesActionPerformed(evt);
-            }
-        });
-
+        button1.setBackground(new java.awt.Color(255, 255, 255));
+        button1.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
         button1.setLabel("Search Lowest Price");
         button1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 button1ActionPerformed(evt);
             }
         });
+        panel4.add(button1, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 296, 492, 39));
 
-        jComboBox1.setModel(getArray());
+        button5.setLabel("button5");
+        panel4.add(button5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 0, 0));
 
-        convertBtn1.setActionCommand("Save Convert");
-        convertBtn1.setLabel("Save Conversion");
-        convertBtn1.addActionListener(new java.awt.event.ActionListener() {
+        button6.setBackground(new java.awt.Color(255, 255, 255));
+        button6.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+        button6.setLabel("Search Prices");
+        button6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                convertBtn1ActionPerformed(evt);
+                button6ActionPerformed(evt);
             }
         });
+        panel4.add(button6, new org.netbeans.lib.awtextra.AbsoluteConstraints(332, 207, 186, -1));
 
-        button2.setLabel("Convert All");
-        button2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button2ActionPerformed(evt);
-            }
-        });
+        textField2.setText("textField2");
+        panel4.add(textField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 0, 0));
+        panel4.add(jSpinner2, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 207, 75, 31));
 
-        button3.setLabel("Add Company");
-        button3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button3ActionPerformed(evt);
-            }
-        });
+        label14.setText("label14");
+        panel4.add(label14, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 0, 0));
 
-        label1.setText("Company Name");
+        label15.setText("label15");
+        panel4.add(label15, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 0, 0));
 
-        label2.setText("Company Symbol");
+        label16.setText("label16");
+        panel4.add(label16, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 0, 0));
 
-        label4.setText("Available Shares");
-
-        label5.setText("Share Price");
-
-        label7.setText("Currency");
-
-        removeCompany.setLabel("Remove Company");
-        removeCompany.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeCompanyActionPerformed(evt);
-            }
-        });
+        label17.setFont(new java.awt.Font("Calibri", 1, 24)); // NOI18N
+        label17.setText("-");
+        panel4.add(label17, new org.netbeans.lib.awtextra.AbsoluteConstraints(125, 204, -1, -1));
+        panel4.add(jSpinner3, new org.netbeans.lib.awtextra.AbsoluteConstraints(146, 204, 75, 35));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(listNamesListBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(listNamesBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(saveConvertCurr, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(button2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, 128, Short.MAX_VALUE)))))
+                    .addComponent(panel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(convertBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(248, 547, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(button3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(165, 165, 165))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(detailsListBox, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(updateShares, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(newSharesField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(removeCompany, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(ConvertedField, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(compSymbolField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(compNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(button1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(nameSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
-                                    .addComponent(symbolSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(searchSymbolBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(searchNameBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(searchListBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(highPriceBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(avSharesField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(priceField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(label7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(currencyField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(17, 17, 17))))
+                    .addComponent(panel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(listNamesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(searchNameBtn1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(nameSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(searchSymbolBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(symbolSearchField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchListBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(removeCompany, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(70, 70, 70)
-                            .addComponent(updateShares, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(newSharesField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(detailsListBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(listNamesListBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(panel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(273, 273, 273))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(panel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(highPriceBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(4, 4, 4)
-                            .addComponent(ConvertedField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(saveConvertCurr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(button2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(convertBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(19, 19, 19)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(compNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(compSymbolField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(avSharesField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(priceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(currencyField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
-                .addComponent(button3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        listNamesListBox.getAccessibleContext().setAccessibleName("listNamesBox");
-        listNamesBtn.getAccessibleContext().setAccessibleName("listNamesBtn");
+        textField1.setFont(new java.awt.Font("Calibri", 0, 18)); // NOI18N
+
+        label13.setText("Ben Swift");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(label13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(346, 346, 346)
+                            .addComponent(textField1, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(8, 8, 8))
+                .addComponent(textField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 676, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(label13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void symbolSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_symbolSearchFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_symbolSearchFieldActionPerformed
-
-    private void searchSymbolBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchSymbolBtnActionPerformed
-        // TODO add your handling code here:
-        String sym = new String();
-        sym = symbolSearchField.getText();
-        String comName = new String();
-        searchListBox.removeAll();
-        //add error handling -> if not company of that name
-        try {
-            comName = searchBySymbol(sym);
-            searchListBox.add(searchName(comName));
-            searchListBox.add(listSymbol(comName));
-            searchListBox.add("" + listAvailableShares(comName));
+private void autoLoad(){
+            try {
+            // TODO add your handling code here:
+            textField1.setText("Loading...");
+            for (int i = 0; i < listNames().size() ;i++ )
+            {
+                
+                listNamesListBox.add(listNames().get(i));
+            }
+            textField1.setText("");
         } catch (Exception ex) {
             Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_searchSymbolBtnActionPerformed
-
-    private void nameSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameSearchFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_nameSearchFieldActionPerformed
-
-    private void listNamesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listNamesBtnActionPerformed
-        listNamesListBox.removeAll();
+}
+    private void button4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button4ActionPerformed
         try {
             // TODO add your handling code here:
 
-            for (int i = 0; i < listNames().size() ;i++ )
+            String name = "";
+            int updatedPrice = 0;
+            //for (int i=0; i < listNames().size(); i++)
+            //{
+                name = listNamesListBox.getSelectedItem();
+                if (listNamesListBox.getSelectedItem() == null )
+                {
+                    showMessageDialog(null, "No company selected");
+                }
+                else{
+                    textField1.setText("Updating...");
+                    updatedPrice = (int) Math.round(updateSharePrice2(listSymbol(name)));
+                    updatePriceXML(updatedPrice,name);
+                    textField1.setText("");
+                }
+                
+                //}
+        } catch (IOException ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_button4ActionPerformed
+
+    private void removeCompanyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeCompanyActionPerformed
+        // TODO add your handling code here:
+        try {
+            if (listNamesListBox.getSelectedItem() == null)
             {
-                listNamesListBox.add(listNames().get(i));
+                showMessageDialog(null, "Select a company to delete");
             }
-        } catch (Exception ex) {
-            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_listNamesBtnActionPerformed
-
-    private void listNamesListBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listNamesListBoxActionPerformed
-        // TODO add your handling code here:
-        detailsListBox.removeAll();
-        String name = new String();
-        name = listNamesListBox.getSelectedItem();
-        try {
-            detailsListBox.add(listSymbol(name));
-            detailsListBox.add("" + listAvailableShares(name));
-            detailsListBox.add(listCurrency(name) + listPrice(name));
-
-        } catch (Exception ex) {
-            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_listNamesListBoxActionPerformed
-
-    private void searchNameBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchNameBtn1ActionPerformed
-        // TODO add your handling code here:
-        String name = new String();
-        name = nameSearchField.getText();
-        searchListBox.removeAll();
-        //add error handling -> if not company of that name
-        try {
-            searchListBox.add(searchName(name));
-            searchListBox.add(listSymbol(name));
-            searchListBox.add("" + listAvailableShares(name));
-        } catch (Exception ex) {
-            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_searchNameBtn1ActionPerformed
-
-    private void searchListBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchListBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_searchListBoxActionPerformed
-
-    private void nameSearchFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nameSearchFieldMouseClicked
-        nameSearchField.setText("");
-    }//GEN-LAST:event_nameSearchFieldMouseClicked
-
-    private void symbolSearchFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_symbolSearchFieldMouseClicked
-        symbolSearchField.setText("");
-    }//GEN-LAST:event_symbolSearchFieldMouseClicked
-
-    private void highPriceBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_highPriceBtnActionPerformed
-        try {
-            searchListBox.add(searchHighestPrice());
-        } catch (Exception ex) {
-            searchListBox.removeAll();
-            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_highPriceBtnActionPerformed
-
-    private void saveConvertCurrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveConvertCurrActionPerformed
-        String name = new String();
-        int selectedCode = 0;
-        name = listNamesListBox.getSelectedItem();
-        selectedCode = jComboBox1.getSelectedIndex();
-        String currency = new String();
-        String newCurrency = new String();
-        int valueBefore = 0;
-        try {
-            currency = listCurrency(name);
-            valueBefore = listPrice(name);
-            newCurrency = getCurrencyCodes().get(selectedCode).substring(0, 3);
-            ConvertedField.setText("" + convert(currency,newCurrency,valueBefore));
-        } catch (Exception ex) {
-            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-    }//GEN-LAST:event_saveConvertCurrActionPerformed
-
-    private void updateSharesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateSharesActionPerformed
-        String name = new String();
-        name = listNamesListBox.getSelectedItem();
-        String currency = new String();
-   
-        String newCurrency = new String();
-        int newShares = 0;
-        
-        try {
-            newShares = Integer.parseInt(newSharesField.getText());
-            updateShares(name,newShares);
-            listNamesListBox.removeAll();
-            detailsListBox.removeAll();
-            for (int i = 0; i < listNames().size();i++ )
+            else
             {
-                listNamesListBox.add(listNames().get(i));
+                String name = listNamesListBox.getSelectedItem();
+                removeCompany(name);
+                listNamesListBox.removeAll();
+                detailsListBox.removeAll();
+                for (int i = 0; i < listNames().size() ;i++ )
+                {
+                    listNamesListBox.add(listNames().get(i));
+                }
             }
+        } catch (JAXBException_Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException_Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }    }//GEN-LAST:event_updateSharesActionPerformed
+        }
+    }//GEN-LAST:event_removeCompanyActionPerformed
 
-    private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
-        try {        
-            searchListBox.add(searchLowestValue());
+    private void button3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button3ActionPerformed
+        try {
+            if (compNameField.getText().isEmpty() || compSymbolField.getText().isEmpty() || avSharesField.getText().isEmpty() ||  priceField.getText().isEmpty() )
+            {
+                showMessageDialog(null,"No company information provided");
+            }
+            else{
+                textField1.setText("Adding new company:"+compNameField.getText() + "...");
+                int avShares = Integer.parseInt(avSharesField.getText());
+                int sharePrice = Integer.parseInt(priceField.getText());
+                addCompany(compNameField.getText(),compSymbolField.getText(),avShares, sharePrice,currencyField.getText());
+                avSharesField.setText("");
+                priceField.setText("");
+                compNameField.setText("");
+                currencyField.setText("");
+                compSymbolField.setText("");
+                textField1.setText("");
+            }
+        } catch (IOException_Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JAXBException_Exception ex) {
             Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_button1ActionPerformed
 
-    private void listNamesListBoxMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listNamesListBoxMouseEntered
-        // TODO add your handling code here:
-    }//GEN-LAST:event_listNamesListBoxMouseEntered
-
-    private void convertBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertBtn1ActionPerformed
-        String name = new String();
-        int selectedCode = 0;
-        name = listNamesListBox.getSelectedItem();
-        selectedCode = jComboBox1.getSelectedIndex();
-        String currency = new String();
-        double newPrice = 0;
-        String newCurrency = new String();
-        int valueBefore = 0;
-        try {
-            currency = listCurrency(name);
-            valueBefore = listPrice(name);
-            newCurrency = getCurrencyCodes().get(selectedCode).substring(0, 3);
-            newPrice = convert(currency,newCurrency,valueBefore);
-            updateCurrencyPrice(newCurrency,newPrice,name);
-        } catch (Exception ex) {
-            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
- 
-        listNamesListBox.removeAll();
-        detailsListBox.removeAll();
-        try {
-            for (int i = 0; i < listNames().size();i++ )
-            {
-                listNamesListBox.add(listNames().get(i));
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_convertBtn1ActionPerformed
+    }//GEN-LAST:event_button3ActionPerformed
 
     private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed
         String name = new String();
@@ -588,102 +600,301 @@ public class ShareClientGUI extends javax.swing.JFrame {
         String newCurrency = new String();
         int valueBefore = 0;
         try {
-            for (int i =0; i < listNames().size();i++)
+            if (ConvertedField.getText().isEmpty())
             {
-                name = listNames().get(i);
+                showMessageDialog(null,"Select a currency to convert to");
+            }
+            else{
+                textField1.setText("Updating...");
+                for (int i =0; i < listNames().size();i++)
+                {
+                    name = listNames().get(i);
+                    currency = listCurrency(name);
+                    valueBefore = listPrice(name);
+                    newCurrency = getCurrencyCodes().get(selectedCode).substring(0, 3);
+                    newPrice = convert(currency,newCurrency,valueBefore);
+                    updateCurrencyPrice(newCurrency,newPrice,name);
+                }
+                textField1.setText("");
+                listNamesListBox.removeAll();
+                detailsListBox.removeAll();
+                for (int i = 0; i < listNames().size();i++ )
+                {
+                    listNamesListBox.add(listNames().get(i));
+                }
+                        }
+        } catch (Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_button2ActionPerformed
+
+    private void convertBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertBtn1ActionPerformed
+        String name = new String();
+        int selectedCode = 0;
+        name = listNamesListBox.getSelectedItem();
+        selectedCode = jComboBox1.getSelectedIndex();
+        String currency = new String();
+        double newPrice = 0;
+        String newCurrency = new String();
+        int valueBefore = 0;
+        try {
+            if (ConvertedField.getText().isEmpty())
+            {
+                showMessageDialog(null,"Select a currency to convert to");
+            }
+            else{
                 currency = listCurrency(name);
                 valueBefore = listPrice(name);
                 newCurrency = getCurrencyCodes().get(selectedCode).substring(0, 3);
                 newPrice = convert(currency,newCurrency,valueBefore);
                 updateCurrencyPrice(newCurrency,newPrice,name);
+                listNamesListBox.removeAll();
+                detailsListBox.removeAll();
+                for (int i = 0; i < listNames().size();i++ )
+                {
+                    listNamesListBox.add(listNames().get(i));
+                }
             }
+        } catch (Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_convertBtn1ActionPerformed
+
+    private void updateSharesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateSharesActionPerformed
+        String name = new String();
+        name = listNamesListBox.getSelectedItem();
+        String currency = new String();
+
+        String newCurrency = new String();
+        int newShares = 0;
+
+        try {
+            if (listNamesListBox.getSelectedItem() == null )
+            {
+                showMessageDialog(null, "Please select a company to update");
+            }
+            else{
+                //newShares = Integer.parseInt(newSharesField.getText());
+                newShares = (int) jSpinner1.getValue();
+                updateShares(name,newShares);
+                listNamesListBox.removeAll();
+                detailsListBox.removeAll();
+                for (int i = 0; i < listNames().size();i++ )
+                {
+                    listNamesListBox.add(listNames().get(i));
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_updateSharesActionPerformed
+
+    private void saveConvertCurrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveConvertCurrActionPerformed
+        String name = new String();
+        int selectedCode = 0;
+        name = listNamesListBox.getSelectedItem();
+        selectedCode = jComboBox1.getSelectedIndex();
+        String currency = new String();
+        String newCurrency = new String();
+        int valueBefore = 0;
+
+        try {
+            if (listNamesListBox.getSelectedItem() == null)
+            {
+                showMessageDialog(null, "Select a company to convert");
+            }
+            else
+            {
+                currency = listCurrency(name);
+                valueBefore = listPrice(name);
+            }
+            newCurrency = getCurrencyCodes().get(selectedCode).substring(0, 3);
+            ConvertedField.setText("" + convert(currency,newCurrency,valueBefore));
         } catch (Exception ex) {
             Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
 
- 
-        listNamesListBox.removeAll();
-        detailsListBox.removeAll();
-        try {
-            for (int i = 0; i < listNames().size();i++ )
-            {
-                listNamesListBox.add(listNames().get(i));
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-//        
-//        try {
-//            //Take all companies
-//            //pass them through the currency converter
-//            //pass output to update shares function
-//            //write new file
-//            //update listbox
-//            //go again... etc.
-//            int selectedCode = 0;
-//            String name = new String();
-//            String initCurr = new String();
-//            String newCurr = new String();
-//            double newPrice = 0;
-//            for (int i=0; i < listNames().size() ; i++ )
-//            {
-//                selectedCode = jComboBox1.getSelectedIndex();
-//                name = listNames().get(i);
-//                initCurr = listCurrency(name);
-//                System.out.println(name + " initCurr" + initCurr);
-//                newPrice = convert(initCurr,newCurr,listPrice(name));
-//                System.out.println("newPrice" + newPrice);
-//                newCurr = getCurrencyCodes().get(selectedCode).substring(0, 3);
-//                System.out.println("newCurr:" + newCurr);
-//                updateCurrencyPrice(newCurr,newPrice,name);
-//            }
-//            listNamesListBox.removeAll();
-//            detailsListBox.removeAll();
-//            for (int i = 0; i < listNames().size();i++ )
-//            {
-//                listNamesListBox.add(listNames().get(i));
-//            }
-//        } catch (Exception ex) {
-//            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-    }//GEN-LAST:event_button2ActionPerformed
+    }//GEN-LAST:event_saveConvertCurrActionPerformed
 
     private void detailsListBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_detailsListBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_detailsListBoxActionPerformed
 
-    private void button3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button3ActionPerformed
+    private void listNamesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listNamesBtnActionPerformed
+        listNamesListBox.removeAll();
         try {
-            int avShares = Integer.parseInt(avSharesField.getText());
-            int sharePrice = Integer.parseInt(priceField.getText());
-            addCompany(compNameField.getText(),compSymbolField.getText(),avShares, sharePrice,currencyField.getText());
-        } catch (IOException_Exception ex) {
+            // TODO add your handling code here:
+            textField1.setText("Loading...");
+            for (int i = 0; i < listNames().size() ;i++ )
+            {
+                
+                listNamesListBox.add(listNames().get(i));
+            }
+            textField1.setText("");
+        } catch (Exception ex) {
             Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_listNamesBtnActionPerformed
+
+    private void listNamesListBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listNamesListBoxActionPerformed
+        // TODO add your handling code here:
+        detailsListBox.removeAll();
+        String name = new String();
+        name = listNamesListBox.getSelectedItem();
+        try {
+            detailsListBox.add("Symbol: " + listSymbol(name));
+            detailsListBox.add("Available Shares: " + listAvailableShares(name));
+            detailsListBox.add("Share Price: " + listCurrency(name) + listPrice(name));
+            jSpinner1.setValue(listAvailableShares(name));
+
+        } catch (Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_listNamesListBoxActionPerformed
+
+    private void listNamesListBoxMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listNamesListBoxMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_listNamesListBoxMouseEntered
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
+        try {
+            textField1.setText("Searching...");
+            searchListBox.removeAll();
+            searchListBox.add(searchLowestValue());
+            textField1.setText("");
         } catch (JAXBException_Exception ex) {
             Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-    }//GEN-LAST:event_button3ActionPerformed
+    }//GEN-LAST:event_button1ActionPerformed
 
-    private void removeCompanyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeCompanyActionPerformed
-        // TODO add your handling code here:
-        String name = listNamesListBox.getSelectedItem();
+    private void highPriceBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_highPriceBtnActionPerformed
         try {
-            removeCompany(name);
-            listNamesListBox.removeAll();
-            detailsListBox.removeAll();
-            for (int i = 0; i < listNames().size() ;i++ )
+            textField1.setText("Searching...");
+            searchListBox.removeAll();
+            searchListBox.add(searchHighestPrice());
+            textField1.setText("");
+        } catch (Exception ex) {
+            
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_highPriceBtnActionPerformed
+
+    private void searchNameBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchNameBtn1ActionPerformed
+        // TODO add your handling code here:
+        String name = new String();
+        name = nameSearchField.getText();
+        searchListBox.removeAll();
+        //add error handling -> if not company of that name
+        try {
+            if (searchName(name).isEmpty())
             {
-                listNamesListBox.add(listNames().get(i));
+                searchListBox.add("No companies found");
+            }
+            else{
+                searchListBox.add("Name: " + searchName(name));
+                searchListBox.add("Symbol: " + listSymbol(name));
+                searchListBox.add("Available Shares: " + listAvailableShares(name));
+                searchListBox.add("Share Price: " + listPrice(name));
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_searchNameBtn1ActionPerformed
+
+    private void symbolSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_symbolSearchFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_symbolSearchFieldActionPerformed
+
+    private void symbolSearchFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_symbolSearchFieldMouseClicked
+        symbolSearchField.setText("");
+    }//GEN-LAST:event_symbolSearchFieldMouseClicked
+
+    private void searchSymbolBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchSymbolBtnActionPerformed
+        // TODO add your handling code here:
+        String sym = new String();
+        sym = symbolSearchField.getText();
+        searchListBox.removeAll();
+        //add error handling -> if not company of that name
+        try {
+            ArrayList<String> comName = (ArrayList<String>) searchBySymbol(sym);
+            textField1.setText("Searching...");
+            if (searchBySymbol(sym).isEmpty())
+            {
+                searchListBox.add("No companies found");
+            }
+            else if (symbolSearchField.getText().isEmpty())
+            {
+                showMessageDialog(null, "Please enter a symbol to search");
+            }
+            else
+            {
+                for (int i =  0 ;i < searchBySymbol(sym).size(); i++ )
+                {
+                    searchListBox.add("Name: " + searchName(comName.get(i)));
+                    searchListBox.add("Symbol: " + listSymbol(comName.get(i)));
+                    searchListBox.add("Available Shares: " + listAvailableShares(comName.get(i)));
+                    searchListBox.add("Share Price: " + listPrice(comName.get(i)));
+                    searchListBox.add("");
+                }
+                textField1.setText("");
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_searchSymbolBtnActionPerformed
+
+    private void nameSearchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameSearchFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nameSearchFieldActionPerformed
+
+    private void nameSearchFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nameSearchFieldMouseClicked
+        nameSearchField.setText("");
+    }//GEN-LAST:event_nameSearchFieldMouseClicked
+
+    private void searchListBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchListBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchListBoxActionPerformed
+
+    private void button6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button6ActionPerformed
+        // TODO add your handling code here:
+        searchListBox.removeAll();
+        try {
+            textField1.setText("Searching...");
+            ArrayList<String> comName = (ArrayList<String>) searchPrice((int) jSpinner2.getValue(),(int) jSpinner3.getValue());
+            if (comName.isEmpty())
+            {
+                searchListBox.add("No companies found");
+            }
+            else if ((int) jSpinner2.getValue() < 0 || (int) jSpinner3.getValue() < 0)
+            {
+                showMessageDialog(null,"Please enter a postive number");
+            }
+            else
+            {
+                for (int i =  0 ;i < comName.size(); i++ )
+                {
+                    searchListBox.add("Name: " + searchName(comName.get(i)));
+                    searchListBox.add("Symbol: " + listSymbol(comName.get(i)));
+                    searchListBox.add("Available Shares: " + listAvailableShares(comName.get(i)));
+                    searchListBox.add("Share Price: " + listPrice(comName.get(i)));
+                    searchListBox.add("");
+                }
+
+                textField1.setText("");
             }
         } catch (JAXBException_Exception ex) {
-            Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FileNotFoundException_Exception ex) {
             Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(ShareClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_removeCompanyActionPerformed
+            
+    }//GEN-LAST:event_button6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -726,6 +937,9 @@ public class ShareClientGUI extends javax.swing.JFrame {
     private java.awt.Button button1;
     private java.awt.Button button2;
     private java.awt.Button button3;
+    private java.awt.Button button4;
+    private java.awt.Button button5;
+    private java.awt.Button button6;
     private java.awt.TextField compNameField;
     private java.awt.TextField compSymbolField;
     private java.awt.Button convertBtn1;
@@ -733,25 +947,46 @@ public class ShareClientGUI extends javax.swing.JFrame {
     private java.awt.List detailsListBox;
     private java.awt.Button highPriceBtn;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JFrame jFrame1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JSpinner jSpinner2;
+    private javax.swing.JSpinner jSpinner3;
     private java.awt.Label label1;
+    private java.awt.Label label10;
+    private java.awt.Label label11;
+    private java.awt.Label label12;
+    private java.awt.Label label13;
+    private java.awt.Label label14;
+    private java.awt.Label label15;
+    private java.awt.Label label16;
+    private java.awt.Label label17;
     private java.awt.Label label2;
     private java.awt.Label label3;
     private java.awt.Label label4;
     private java.awt.Label label5;
     private java.awt.Label label6;
     private java.awt.Label label7;
+    private java.awt.Label label8;
+    private java.awt.Label label9;
     private java.awt.Button listNamesBtn;
     private java.awt.List listNamesListBox;
     private java.awt.TextField nameSearchField;
-    private java.awt.TextField newSharesField;
+    private java.awt.Panel panel1;
+    private java.awt.Panel panel2;
+    private java.awt.Panel panel3;
+    private java.awt.Panel panel4;
     private java.awt.TextField priceField;
     private java.awt.Button removeCompany;
     private java.awt.Button saveConvertCurr;
+    private java.awt.ScrollPane scrollPane1;
     private java.awt.List searchListBox;
     private java.awt.Button searchNameBtn1;
     private java.awt.Button searchSymbolBtn;
     private java.awt.TextField symbolSearchField;
+    private java.awt.TextField textField1;
+    private java.awt.TextField textField2;
     private java.awt.TextField textField3;
     private java.awt.TextField textField6;
     private java.awt.Button updateShares;
@@ -793,11 +1028,7 @@ public class ShareClientGUI extends javax.swing.JFrame {
         return port.searchName(arg0);
     }
 
-    private static String searchBySymbol(java.lang.String arg0) throws Exception {
-        shares.ShareBroker_Service service = new shares.ShareBroker_Service();
-        shares.ShareBroker port = service.getShareBrokerPort();
-        return port.searchBySymbol(arg0);
-    }
+
 
     private static String searchHighestPrice() throws Exception {
         shares.ShareBroker_Service service = new shares.ShareBroker_Service();
@@ -810,52 +1041,40 @@ public class ShareClientGUI extends javax.swing.JFrame {
         shares.ShareBroker port = service.getShareBrokerPort();
         return port.convert(arg0, arg1, arg2);
     }
-
-
-    
-  public static void JSON() throws MalformedURLException, IOException, ParseException{
-       URL url = new URL("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=VIQKMWQYY1TF44IM&datatype=JSON");
-        HttpURLConnection conn = (HttpURLConnection)url.openConnection(); 
+public static double updateSharePrice2(String symbol) throws NumberFormatException, MalformedURLException, IOException, java.text.ParseException{ //MOVE TO SHAREBROKER
+      System.out.println("symbol: " + symbol); 
+      URL url = new URL("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + symbol + "&apikey=VIQKMWQYY1TF44IM&datatype=JSON");
+       HttpURLConnection conn = (HttpURLConnection)url.openConnection(); 
         conn.setRequestMethod("GET");
         conn.connect(); 
         String inline = new String();
-        Gson n = new Gson();
+        double updatedPrice = 0;
+        
         int responsecode = conn.getResponseCode(); 
+        System.out.println(responsecode);
         if(responsecode != 200) throw new RuntimeException("HttpResponseCode: " +responsecode);
         else
         {
             Scanner sc = new Scanner(url.openStream());
-            while(sc.hasNext())
+            while(sc.hasNextLine())
             {
-                inline +=sc.nextLine();
+                inline = sc.nextLine();
+                System.out.println(inline);
+                inline = sc.nextLine();
+                if (inline.contains("close"))//get value at close
+                {
+                    System.out.println(inline);
+                    String newPrice = inline.substring(25, 31);
+                    System.out.println(newPrice);
+                    updatedPrice = Double.parseDouble(newPrice);
+                    break;
+                }
             }
-            System.out.println("\nJSON data in string format");
-            System.out.println(inline);
-            sc.close();
-        }
-        n.toJson(inline);
-         JSONParser parse = new JSONParser(); 
-         JSONObject jobj = (JSONObject)parse.parse(inline);
-         JSONArray jsonarr_1 = (JSONArray) jobj.get("Meta Data");
-         //Get data for Results array
-         for(int i=0;i<jsonarr_1.size();i++)
-         {
-
-//Store the JSON objects in an array
-
-//Get the index of the JSON object and print the values as per the index
-             JSONObject jsonobj_1 = (JSONObject)jsonarr_1.get(i);
-             System.out.println("Elements under results array");
-
             
-             System.out.println("\nPlace id: " +jsonobj_1.get("Symbol"));
-             System.out.println("open: " +jsonobj_1.get("open"));
+        }
 
-}
-         
-        
- 
-}
+     return updatedPrice;    
+    }
 
     private static java.util.List<java.lang.String> getCurrencyCodes() {
         docwebservices.CurrencyConversionWSService service = new docwebservices.CurrencyConversionWSService();
@@ -909,6 +1128,38 @@ public class ShareClientGUI extends javax.swing.JFrame {
         shares.ShareBroker port = service.getShareBrokerPort();
         return port.removeCompany(arg0);
     }
+
+    private static double updateSharePrice(java.lang.String arg0) throws IOException_Exception, ParseException_Exception, MalformedURLException_Exception {
+        shares.ShareBroker_Service service = new shares.ShareBroker_Service();
+        shares.ShareBroker port = service.getShareBrokerPort();
+        return port.updateSharePrice(arg0);
+    }
+
+    private static UpdatePriceXMLResponse.Return updatePriceXML(double arg0, java.lang.String arg1) throws FileNotFoundException_Exception, JAXBException_Exception {
+        shares.ShareBroker_Service service = new shares.ShareBroker_Service();
+        shares.ShareBroker port = service.getShareBrokerPort();
+        return port.updatePriceXML(arg0, arg1);
+    }
+
+    private static double getNewValue(java.lang.String arg0) {
+        shares.ShareBroker_Service service = new shares.ShareBroker_Service();
+        shares.ShareBroker port = service.getShareBrokerPort();
+        return port.getNewValue(arg0);
+    }
+
+
+    private static java.util.List<java.lang.String> searchBySymbol(java.lang.String arg0) throws Exception_Exception {
+        shares.ShareBroker_Service service = new shares.ShareBroker_Service();
+        shares.ShareBroker port = service.getShareBrokerPort();
+        return port.searchBySymbol(arg0);
+    }
+
+    private static java.util.List<java.lang.String> searchPrice(int arg0, int arg1) throws JAXBException_Exception {
+        shares.ShareBroker_Service service = new shares.ShareBroker_Service();
+        shares.ShareBroker port = service.getShareBrokerPort();
+        return port.searchPrice(arg0, arg1);
+    }
+
 
 
 

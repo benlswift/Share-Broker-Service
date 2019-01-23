@@ -8,6 +8,10 @@ package shares;
 import docwebservices.CurrencyConversionWSService;
 import java.awt.*;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.ParseException;
 import javax.jws.*;
 import javax.ejb.Stateless;
 import java.util.*;
@@ -28,7 +32,7 @@ public class shareBroker {
 
     @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/localhost_8080/CurrencyConvertor/CurrencyConversionWSService.wsdl")
     private CurrencyConversionWSService service;
-
+    
 
     /**
      * This is a sample web service operation
@@ -60,6 +64,7 @@ public class shareBroker {
         price.setValue(value);
         com.setSharePrice(price);
         companyList.add(com);
+        String filepath = "output.xml";
         FileOutputStream fout = new FileOutputStream("C:\\Users\\bensw\\OneDrive - Nottingham Trent University\\Year 3\\Cloud Computing\\Assignment\\Working Version\\shareBrokeringWS\\shareBrokeringWS\\shareBrokeringWS/output.xml");
         try {            
             javax.xml.bind.JAXBContext jaxbCtx = javax.xml.bind.JAXBContext.newInstance(theCompanies.getClass().getPackage().getName());
@@ -235,6 +240,7 @@ public class shareBroker {
      */
     public String searchName(String name) throws Exception {
         //TODO write your implementation code here:
+        
         for (int i = 0; i < listShares().getCompanyCollection().size();i++)
         {
             if (listShares().getCompanyCollection().get(i).getName().equals(name)){
@@ -250,15 +256,36 @@ public class shareBroker {
     public String searchHighestPrice() throws Exception {        
         int highPrice = 0;
         int highCompany = 0;
+        int priceInGBP = 0;
         for (int i = 0; i < listShares().getCompanyCollection().size();i++)
         {
-            if (listShares().getCompanyCollection().get(i).getSharePrice().getValue() >= highPrice)
-            {
-                highPrice = listShares().getCompanyCollection().get(i).getSharePrice().getValue();
+            priceInGBP = (int) convert(listShares().getCompanyCollection().get(i).getSharePrice().getCurrency(),"GBP",listShares().getCompanyCollection().get(i).getSharePrice().getValue());
+            if (priceInGBP >= highPrice)
+            {//convert into GBP and compare
+                highPrice = priceInGBP;
                 highCompany = i;
             }
         }
         return "The company with the highest share price is " + listShares().getCompanyCollection().get(highCompany).getName() + " at " + highPrice + listShares().getCompanyCollection().get(highCompany).getSharePrice().getCurrency() ;
+    }
+        public String searchLowestValue() throws JAXBException
+    {
+        int lowPrice = 0;
+        int lowCompany = 0;
+        int priceInGBP = 0;
+        //initialise lowest price as first company in GBP
+        lowPrice = (int) convert(listShares().getCompanyCollection().get(0).getSharePrice().getCurrency(),"GBP",listShares().getCompanyCollection().get(0).getSharePrice().getValue());
+        for (int i = 0; i < listShares().getCompanyCollection().size();i++)
+        {
+            priceInGBP = (int) convert(listShares().getCompanyCollection().get(i).getSharePrice().getCurrency(),"GBP",listShares().getCompanyCollection().get(i).getSharePrice().getValue());
+
+            if (listShares().getCompanyCollection().get(i).getSharePrice().getValue() <= lowPrice)
+            {
+                lowPrice = priceInGBP;
+                lowCompany = i;
+            }
+        }
+        return "The company with the lowest share price is " + listShares().getCompanyCollection().get(lowCompany).getName() + " at " + lowPrice + listShares().getCompanyCollection().get(lowCompany).getSharePrice().getCurrency() ;
     }
 
     /**
@@ -284,15 +311,21 @@ public class shareBroker {
 
     /**
      * Web service operation
+     * @param symbol
+     * @return 
+     * @throws java.lang.Exception
      */
-    public String searchBySymbol(String symbol) throws Exception {
-        String name = new String();
+    public ArrayList<String> searchBySymbol(String symbol) throws Exception {
+        ArrayList<String> name = new ArrayList();
+        int counter = 0;
         for (int i = 0; i < listShares().getCompanyCollection().size();i++)
         {
-            if (listShares().getCompanyCollection().get(i).getSymbol().equals(symbol)){
-               name = listShares().getCompanyCollection().get(i).getName();
+            if (listShares().getCompanyCollection().get(i).getSymbol().contains(symbol)){
+                counter += 1;
+                name.add(listShares().getCompanyCollection().get(i).getName());
             }
         }
+
         return name;
     }
 
@@ -302,9 +335,9 @@ public class shareBroker {
     public double convert(String intitialCurrency, String newCurrency, int price) {
         double convert = 0;
         double newPrice = 0;
-        convert = getConversionRate(intitialCurrency,newCurrency);
+        convert = getConversionRate(intitialCurrency,newCurrency);//get conversion rate between two currencies
         System.out.println("Conversion Rate: " + convert);
-        newPrice = price * convert;
+        newPrice = price * convert;//multiply conversion rate by old price to get converted value
        
         return newPrice;
     }
@@ -313,24 +346,25 @@ public class shareBroker {
     {
         Company com;
         AllCompanies theUpdatedCompanies = new AllCompanies();
-        java.util.List<Company> companyList =  theUpdatedCompanies.getCompanyCollection();
+        java.util.List<Company> companyList =  theUpdatedCompanies.getCompanyCollection();//list of all companies 
         int idNum = 0;
         for (int i = 0; i < listShares().getCompanyCollection().size();i++)
         {
-            Company com1 = listShares().getCompanyCollection().get(i);
+            Company com1 = listShares().getCompanyCollection().get(i);//get each company 
             companyList.add(com1);
-            if (listShares().getCompanyCollection().get(i).getName().equals(name))
+            if (listShares().getCompanyCollection().get(i).getName().equals(name))//if this company needs updating
             {
                 idNum = i;
-                listShares().getCompanyCollection().get(i).sharePrice.setValue((int) newPrice);
-                listShares().getCompanyCollection().get(i).sharePrice.setCurrency(newCurrency);
+                listShares().getCompanyCollection().get(i).sharePrice.setValue((int) newPrice);//set company value to new price
+                listShares().getCompanyCollection().get(i).sharePrice.setCurrency(newCurrency);//set currency to new currency
                 System.out.println("Updated company: " + listShares().getCompanyCollection().get(i).getName());
             }
         }
         
         theUpdatedCompanies.getCompanyCollection().get(idNum).sharePrice.setCurrency(newCurrency);
         theUpdatedCompanies.getCompanyCollection().get(idNum).sharePrice.setValue((int) newPrice);
-        
+                
+        //Make and populate new xml
         FileOutputStream fout = new FileOutputStream("C:\\Users\\bensw\\OneDrive - Nottingham Trent University\\Year 3\\Cloud Computing\\Assignment\\Working Version\\shareBrokeringWS\\shareBrokeringWS\\shareBrokeringWS/output.xml");
         try {            
             javax.xml.bind.JAXBContext jaxbCtx = javax.xml.bind.JAXBContext.newInstance(theUpdatedCompanies.getClass().getPackage().getName());
@@ -348,25 +382,11 @@ public class shareBroker {
         }
         return theUpdatedCompanies;
     }
-    public String searchLowestValue() throws JAXBException
-    {
-        int lowPrice = 0;
-        int lowCompany = 0;
-        lowPrice = listShares().getCompanyCollection().get(0).getSharePrice().getValue();
-        for (int i = 0; i < listShares().getCompanyCollection().size();i++)
-        {
-            if (listShares().getCompanyCollection().get(i).getSharePrice().getValue() <= lowPrice)
-            {
-                lowPrice = listShares().getCompanyCollection().get(i).getSharePrice().getValue();
-                lowCompany = i;
-            }
-        }
-        return "The company with the lowest share price is " + listShares().getCompanyCollection().get(lowCompany).getName() + " at " + lowPrice + listShares().getCompanyCollection().get(lowCompany).getSharePrice().getCurrency() ;
-    }
+
   public String removeCompany(String name) throws JAXBException, FileNotFoundException{
         AllCompanies theCompanies = new AllCompanies();
         java.util.List<Company> companyList =  theCompanies.getCompanyCollection();
-        
+        //iterate through all companies and add them to the companies list apart from the company to be removed
         for (int i = 0; i < listShares().getCompanyCollection().size();i++)
         {
             if (listShares().getCompanyCollection().get(i).getName().equals(name))
@@ -394,5 +414,146 @@ public class shareBroker {
             java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE, null, ex); //NOI18N
         }
         return "Company removed";
+  }
+  
+  public double updateSharePrice(String symbol) throws NumberFormatException, MalformedURLException, IOException, ParseException{ //MOVE TO SHAREBROKER
+       
+      //connect to api
+      URL url = new URL("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + symbol + "&apikey=VIQKMWQYY1TF44IM&datatype=JSON");
+       HttpURLConnection conn = (HttpURLConnection)url.openConnection(); 
+        conn.setRequestMethod("GET");
+        conn.connect(); 
+        String inline = new String();
+        double updatedPrice = 0;
+        
+        int responsecode = conn.getResponseCode(); 
+        System.out.println(responsecode);
+        if(responsecode != 200) throw new RuntimeException("HttpResponseCode: " +responsecode);
+        else
+        {
+            Scanner sc = new Scanner(url.openStream());
+            while(sc.hasNext())
+            {
+                //scan each line
+                inline = sc.nextLine();
+                inline = sc.nextLine();
+                //search for "close" in the response
+                if (inline.contains("close"))//get value at close
+                {
+                    System.out.println(inline);
+                    String newPrice = inline.substring(25, 31);//get the values 
+                    System.out.println(newPrice);
+                    updatedPrice = Double.parseDouble(newPrice);
+
+                    break;
+                }
+            }
+            sc.close();
+        }
+
+     return updatedPrice;    
+    }
+  
+  public AllCompanies updatePriceXML(double updatedPrice, String name) throws FileNotFoundException, JAXBException
+  {
+    Company com;
+    AllCompanies theUpdatedCompanies = new AllCompanies();
+    java.util.List<Company> companyList =  theUpdatedCompanies.getCompanyCollection();
+    int idNum = 0;
+    for (int i = 0; i < listShares().getCompanyCollection().size();i++)
+    {
+        Company com1 = listShares().getCompanyCollection().get(i);
+        companyList.add(com1);
+        if (listShares().getCompanyCollection().get(i).getName().equals(name))
+        {
+            idNum = i;
+            listShares().getCompanyCollection().get(i).sharePrice.setValue((int) updatedPrice);
+            listShares().getCompanyCollection().get(i).sharePrice.setCurrency("GBP");//updated price is always in GBP
+            System.out.println("Updated company: " + listShares().getCompanyCollection().get(i).getName());
+        }
+    }
+
+    theUpdatedCompanies.getCompanyCollection().get(idNum).sharePrice.setCurrency("GBP");
+    theUpdatedCompanies.getCompanyCollection().get(idNum).sharePrice.setValue((int) updatedPrice);
+
+    FileOutputStream fout = new FileOutputStream("C:\\Users\\bensw\\OneDrive - Nottingham Trent University\\Year 3\\Cloud Computing\\Assignment\\Working Version\\shareBrokeringWS\\shareBrokeringWS\\shareBrokeringWS/output.xml");
+    try {            
+        javax.xml.bind.JAXBContext jaxbCtx = javax.xml.bind.JAXBContext.newInstance(theUpdatedCompanies.getClass().getPackage().getName());
+        javax.xml.bind.Marshaller marshaller = jaxbCtx.createMarshaller();
+        marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_ENCODING, "UTF-8"); //NOI18N
+        marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        //BufferedWriter writer = new BufferedWriter(new FileWriter("‪C:\\\\Users\\\\bensw\\\\OneDrive - Nottingham Trent University\\\\Year 3\\\\Cloud Computing\\\\Assignment\\\\Working Version\\\\shareBrokeringWS\\\\shareBrokeringWS\\\\shareBrokeringWS/samplefile1.txt"));
+        //File file = new File("‪C:\\Users\\bensw\\Desktop/output2.xml");
+        marshaller.marshal(theUpdatedCompanies, fout);
+        System.out.println("File updated:" + fout.toString());
+        //marshaller.marshal(quickXML, System.out);
+    } catch (javax.xml.bind.JAXBException ex) {
+        // XXXTODO Handle exception
+        java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE, null, ex); //NOI18N
+    }
+    return theUpdatedCompanies;
+  }
+  
+  public double getNewValue(String symbol)
+  {
+    double res = 0;
+    String inline = new String();
+        try {
+            URL url = new URL("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + symbol + "&apikey=VIQKMWQYY1TF44IM&datatype=JSON");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+// Check for successful response code or throw error
+            if (conn.getResponseCode() != 200) {
+                throw new IOException(conn.getResponseMessage());
+            }
+            BufferedReader ins = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inString; 
+            StringBuilder sb = new StringBuilder();
+            while ((inString = ins.readLine()) != null) {
+                         Scanner sc = new Scanner(url.openStream());
+                         System.out.println(sc.nextLine());
+            while(sc.hasNext())
+            {
+                inline = sc.nextLine();
+                inline = sc.nextLine();
+                if (inline.contains("close"))//get value at close
+                {
+                    System.out.println(inline);
+                    String newPrice = inline.substring(25, 31);
+                    System.out.println(newPrice);
+                    res = Double.parseDouble(newPrice);
+
+                    break;
+                }
+            }
+            sc.close();
+            sb.append(inString + "\n");
+            }
+            //String result = sb.substring(sb.indexOf(":") + 1, sb.indexOf("}"));
+            //res = Double.parseDouble(result);
+            ins.close();
+        }
+        catch (MalformedURLException me) {
+            System.out.println("MalformedURLException: " + me); 
+        }
+        catch (IOException ioe) {
+            System.out.println("IOException: " + ioe);
+        }
+    
+        return res;
+}
+  public ArrayList<String> searchPrice(int from, int to) throws JAXBException
+  {
+      ArrayList<String> listOfCompanies = new ArrayList();
+      int sharePrice = 0;
+      for (int i = 0; i < listShares().companyCollection.size(); i++)
+      {
+          sharePrice = (int) convert(listShares().getCompanyCollection().get(i).getSharePrice().getCurrency(),"GBP",listShares().getCompanyCollection().get(i).getSharePrice().getValue());
+          if (sharePrice < to && sharePrice > from)
+          {
+              listOfCompanies.add(listShares().getCompanyCollection().get(i).getName());
+          }
+      }
+      
+      return listOfCompanies;
   }
 }
